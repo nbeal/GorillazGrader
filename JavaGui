@@ -79,15 +79,19 @@ public class JavaGui {
 		btnBrowse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-				String filename = File.separator+"tmp";
-				JFileChooser fc = new JFileChooser(new File(filename));
+				
+					String filename = File.separator+"tmp";
+					JFileChooser fc = new JFileChooser(new File(filename));
 
-				// Show open dialog; this method does not return until the dialog is closed
-				fc.showOpenDialog(frame);
-				File file = fc.getSelectedFile();
-				pathToFile = file.getAbsolutePath();
-				zipLocationJTextArea.setText(pathToFile);
-				btnSubmit.setEnabled(true);
+					// Show open dialog; this method does not return until the dialog is closed
+					int value = fc.showOpenDialog(frame);
+					if(value == JFileChooser.APPROVE_OPTION)
+					{
+						File file = fc.getSelectedFile();
+						pathToFile = file.getAbsolutePath();
+						zipLocationJTextArea.setText(pathToFile);
+						btnSubmit.setEnabled(true);
+					}
 				}
 				catch(Exception ex) {}
 			}
