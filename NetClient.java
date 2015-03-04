@@ -11,21 +11,29 @@ import java.net.Socket;
 
 public class NetClient {
 	
-	public static void main(String[] args) throws Exception {
-		connectToServer();
+	private String _fileInput;
+	public NetClient(String fileInput) {
+		_fileInput = fileInput;
+	}
+	
+	public void start() {
+		try {
+			connectToServer();
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	// Client side method.
-	public static void connectToServer() throws IOException {
+	public void connectToServer() throws IOException {
 		//bufferedOutputStream = new BufferedOutputStream(new FileOutputStream("INSERT_FILE_NAME"));
 		Socket connection = new Socket("localhost", 1234);
-		String filePath = "C:\\Users\\Kyler\\Downloads\\test\\";
-		String fileName = "KyTest.zip";
+		//String filePath = "C:\\Users\\Kyler\\Downloads\\test\\";
+		//String fileName = "KyTest.zip";
+		File f = new File(_fileInput);
 		
 		//Send file  
 		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
-		dos.writeUTF(fileName);
-		FileInputStream fis = new FileInputStream(filePath + fileName);
+		dos.writeUTF(f.getName());
+		FileInputStream fis = new FileInputStream(_fileInput);
 		byte[] buffer = new byte[1024];
 		
 		while (fis.read(buffer) > 0) {
