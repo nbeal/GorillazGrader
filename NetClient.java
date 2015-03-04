@@ -11,11 +11,9 @@ import java.net.Socket;
 
 
 public class NetClient {
-
-	private BufferedOutputStream bufferedOutputStream;
 	
-	public NetClient() {
-		
+	public static void main(String[] args) throws Exception {
+		connectToServer();
 	}
 	
 	// Client side method.
