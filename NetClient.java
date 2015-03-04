@@ -1,14 +1,13 @@
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
+import java.io.PrintWriter;
 import java.net.Socket;
-
 
 public class NetClient {
 	
@@ -19,11 +18,29 @@ public class NetClient {
 	// Client side method.
 	public static void connectToServer() throws IOException {
 		//bufferedOutputStream = new BufferedOutputStream(new FileOutputStream("INSERT_FILE_NAME"));
-
-		File transfer = new File("C:\\Users\\Kyler\\Downloads\\test\\send.txt");
-		InputStream in = new FileInputStream(transfer);
-		
 		Socket connection = new Socket("localhost", 1234);
+		String filePath = "C:\\Users\\Kyler\\Downloads\\test\\";
+		String fileName = "KyTest.zip";
+		
+		//Send file  
+		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
+		dos.writeUTF(fileName);
+		FileInputStream fis = new FileInputStream(filePath + fileName);
+		byte[] buffer = new byte[1024];
+		
+		while (fis.read(buffer) > 0) {
+			dos.write(buffer);
+		}
+		
+		dos.flush();
+		
+		fis.close();
+		dos.close();	
+		connection.close();
+		
+		/*
+		File transfer = new File("C:\\Users\\Kyler\\Downloads\\test\\" + fileName);
+		InputStream in = new FileInputStream(transfer);
 		
 		OutputStream output = connection.getOutputStream();
 		
@@ -36,9 +53,11 @@ public class NetClient {
 		{
 			output.write(buff,0,bytesRead);
 		}
+		
 		in.close();
 		connection.close();
 		output.close();
+		*/
 		
 	}
 }
