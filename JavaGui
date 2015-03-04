@@ -62,6 +62,7 @@ public class JavaGui {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		try{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,6 +78,7 @@ public class JavaGui {
 		JButton btnBrowse = new JButton("Browse");
 		btnBrowse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try{
 				String filename = File.separator+"tmp";
 				JFileChooser fc = new JFileChooser(new File(filename));
 
@@ -86,6 +88,8 @@ public class JavaGui {
 				pathToFile = file.getAbsolutePath();
 				zipLocationJTextArea.setText(pathToFile);
 				btnSubmit.setEnabled(true);
+				}
+				catch(Exception ex) {}
 			}
 		});
 		springLayout.putConstraint(SpringLayout.NORTH, btnBrowse, 32, SpringLayout.SOUTH, DescriptionJLabel);
@@ -120,6 +124,7 @@ public class JavaGui {
 		springLayout.putConstraint(SpringLayout.WEST, btnSubmit, 0, SpringLayout.WEST, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, btnSubmit, -52, SpringLayout.SOUTH, frame.getContentPane());
 		frame.getContentPane().add(btnSubmit);
-
+		}
+		catch(Exception exp) {}
 	}
 }
