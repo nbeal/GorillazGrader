@@ -33,6 +33,7 @@ public class JavaGui {
 	private String pathToFile = "";
 	private JTextArea zipLocationJTextArea;
 	private JTextArea gradingJTextArea;
+	private JButton btnSubmit;
 
 	/**
 	 * Launch the application.
@@ -84,8 +85,7 @@ public class JavaGui {
 				File file = fc.getSelectedFile();
 				pathToFile = file.getAbsolutePath();
 				zipLocationJTextArea.setText(pathToFile);
-				gradingJTextArea.setText("Your score was: 100/100");
-				//get score from server goes here
+				btnSubmit.setEnabled(true);
 			}
 		});
 		springLayout.putConstraint(SpringLayout.NORTH, btnBrowse, 32, SpringLayout.SOUTH, DescriptionJLabel);
@@ -108,9 +108,13 @@ public class JavaGui {
 		springLayout.putConstraint(SpringLayout.EAST, gradingJTextArea, 136, SpringLayout.EAST, DescriptionJLabel);
 		frame.getContentPane().add(gradingJTextArea);
 		
-		JButton btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Submit");
+		btnSubmit.setEnabled(false);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnSubmit.setEnabled(false);
+				btnBrowse.setEnabled(false);
+				gradingJTextArea.setText("Your score was: 100/100");
 			}
 		});
 		springLayout.putConstraint(SpringLayout.WEST, btnSubmit, 0, SpringLayout.WEST, frame.getContentPane());
