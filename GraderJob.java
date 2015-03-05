@@ -1,11 +1,9 @@
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
 
 
@@ -19,54 +17,25 @@ public class GraderJob implements Runnable {
 
 	@Override
 	public void run() {
-		connectToClient();
+		try { connectToClient(); } catch (IOException e) { e.printStackTrace(); }
 	}
 	
-	private void connectToClient() {
+	private void connectToClient() throws IOException {
 		
-		int bytesRead;
-		String inputPath = "C:\\Users\\Kyler\\Downloads\\test\\Input\\";
-		
-		InputStream in = null;
-		
-		try {
-			in = _socket.getInputStream();
-		  
-			DataInputStream clientData = new DataInputStream(in); 
-	        
-			String fileName = clientData.readUTF();   
-	        OutputStream output = new FileOutputStream(inputPath + fileName);   
-	        long size = clientData.readLong();   
-	        byte[] buffer = new byte[1024];   
-	        
-	        while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int)Math.min(buffer.length, size))) != -1)   
-	        {   
-	            output.write(buffer, 0, bytesRead);   
-	            size -= bytesRead;   
-	        }
-	        
-	        clientData.close();
-	        output.flush();
-	         
-	        // Closing the FileOutputStream handle
-	        output.close();
-			_socket.close();
-			
-		} catch (IOException e) {e.printStackTrace();} 
-		
-		System.out.println("Finished receiving file.");
-		
-		/*
+		String inputPath = "\\Input\\";
+	
 		// Receive the name of the incoming zip file from the client.
-		br = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-		incomingFileName = br.readLine();
-		//br.close();
-		System.out.println("Incoming zip file name: " + incomingFileName);
-		
 		InputStream input = _socket.getInputStream();
-		
-		// 
-		FileOutputStream fos = new FileOutputStream(new File("C:\\Users\\Kyler\\Downloads\\test\\Input\\" + incomingFileName));
+		BufferedReader br = new BufferedReader(new InputStreamReader(input));
+		String incomingFileName = br.readLine();
+		File f = new File(incomingFileName);
+		incomingFileName = f.getName();
+
+		System.out.println("Incoming zip file name: " + incomingFileName);
+				
+		// Create the stream where you write the incoming file. (to the Input folder)
+		String filePathInput = inputPath + incomingFileName;
+		FileOutputStream fos = new FileOutputStream(new File(filePathInput));
 		
 		byte[] outBuffer = new byte[_socket.getReceiveBufferSize()];
 		int bytesReceived = 0;
@@ -75,9 +44,13 @@ public class GraderJob implements Runnable {
 		{
 			fos.write(outBuffer,0,bytesReceived);
 		}
+		
+		fos.flush();
+		
+		System.out.println("Finished receiving file:" + incomingFileName);
+		
 		fos.close();
 		input.close();
-		_socket.close();
-		*/
+		//_socket.close();
 	}
 }
