@@ -12,6 +12,7 @@ import java.net.Socket;
 public class NetClient {
 	
 	private String _fileInput;
+	
 	public NetClient(String fileInput) {
 		_fileInput = fileInput;
 	}
@@ -29,7 +30,7 @@ public class NetClient {
 		//String filePath = "C:\\Users\\Kyler\\Downloads\\test\\";
 		//String fileName = "KyTest.zip";
 		File f = new File(_fileInput);
-		
+		/*
 		//Send file  
 		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
 		dos.writeUTF(f.getName());
@@ -43,16 +44,22 @@ public class NetClient {
 		dos.flush();
 		
 		fis.close();
-		dos.close();	
-		connection.close();
+		dos.close();
+		System.out.println("Finished sending file.");
+		*/
 		
-		/*
+		long fileSize = f.length();
+		String fileName = f.getName();
+		
 		File transfer = new File("C:\\Users\\Kyler\\Downloads\\test\\" + fileName);
 		InputStream in = new FileInputStream(transfer);
 		
 		OutputStream output = connection.getOutputStream();
 		
-		byte[] buff = new byte[connection.getSendBufferSize()];
+		PrintWriter out = new PrintWriter(output, true);
+		out.println(fileName);
+		
+		byte[] buff = new byte[(int) fileSize];
 		int bytesRead = 0;
 		
 		System.out.println(transfer.length()+ " bytes");
@@ -62,10 +69,12 @@ public class NetClient {
 			output.write(buff,0,bytesRead);
 		}
 		
+		output.flush();
+		
 		in.close();
-		connection.close();
 		output.close();
-		*/
+		connection.close();
+		
 		
 	}
 }
