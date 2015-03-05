@@ -3,33 +3,25 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import java.awt.BorderLayout;
-
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.GridLayout;
-
-import javax.swing.BoxLayout;
-import javax.swing.JTextPane;
-
-import java.awt.FlowLayout;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
-import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.SpringLayout;
-import javax.swing.JTextField;
 import javax.swing.JTextArea;
 
 
 public class JavaGui {
 
 	private JFrame frame;
-	private JTextField textField;
 	private String pathToFile = "";
 	private JTextArea zipLocationJTextArea;
 	private JTextArea gradingJTextArea;
@@ -75,7 +67,7 @@ public class JavaGui {
 		DescriptionJLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		frame.getContentPane().add(DescriptionJLabel);
 		
-		JButton btnBrowse = new JButton("Browse");
+		final JButton btnBrowse = new JButton("Browse");
 		btnBrowse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
@@ -88,9 +80,16 @@ public class JavaGui {
 					if(value == JFileChooser.APPROVE_OPTION)
 					{
 						File file = fc.getSelectedFile();
+						if(isZipFile(file))
+						{
 						pathToFile = file.getAbsolutePath();
 						zipLocationJTextArea.setText(pathToFile);
 						btnSubmit.setEnabled(true);
+						}
+						else
+						{
+						zipLocationJTextArea.setText("File must be of type zip");		
+						}
 					}
 				}
 				catch(Exception ex) {}
@@ -122,6 +121,7 @@ public class JavaGui {
 			public void actionPerformed(ActionEvent e) {
 				btnSubmit.setEnabled(false);
 				btnBrowse.setEnabled(false);
+				//etClient netClient = new NetClient(pathToFile);
 				gradingJTextArea.setText("Your score was: 100/100");
 			}
 		});
@@ -131,4 +131,19 @@ public class JavaGui {
 		}
 		catch(Exception exp) {}
 	}
-}
+	public static boolean isZipFile(File file) throws IOException {
+	      if(file.isDirectory()) {
+	          return false;
+	      }
+	      if(!file.canRead()) {
+	          throw new IOException("Cannot read file "+file.getAbsolutePath());
+	      }
+	      if(file.length() < 4) {
+	          return false;
+	      }
+	      DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+	      int test = in.readInt();
+	      in.close();
+	      return test == 0x504b0304;
+	  }
+	}
