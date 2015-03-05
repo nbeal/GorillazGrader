@@ -10,7 +10,7 @@
 			
 			try{
 				File[] files;
-				File dir = new File("Thing");
+				File dir = new File("LinkedList");
 				files = dir.listFiles(new FilenameFilter() {
 			    	public boolean accept(File dir, String name) {
 			        	return name.toLowerCase().endsWith(".java");
@@ -18,7 +18,7 @@
 				});
 				String[] filenames = new String[files.length];
 				for(int i = 0; i < files.length; i++)
-					filenames[i] = files[i].getName();
+					filenames[i] = files[i].getPath();
 	
 			File file = new File("Errors.txt");
 			try{
