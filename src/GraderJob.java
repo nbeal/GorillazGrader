@@ -62,20 +62,32 @@ public class GraderJob implements Runnable {
 	}
 	
 	private void extractAndCompile(String zip) {
+
+        // Extract the received zip file into a directory of same name. eg: kburnett.zip -> /kburnett/
 		ZipExtractor.extract(zip);
 		File f = new File(zip);
 		String extractedDir = "./Input/" + f.getName();
-		
-		System.out.println("Starting compile...");
-		ApeCompiler compiler = new ApeCompiler(extractedDir);
-		ArrayList<String> compilerErrors = compiler.run();
-		
-		if (compilerErrors.get(0).equals("success"))
-			System.out.println("Program compiled successfully.");
-		else {
-			System.out.println("Listing known errors.");
-			for (String item : compilerErrors)
-				System.out.println(item);
-		}
+
+        // Attempt to compile the java files within the directory.
+        // If compilation is successful, the first index in errors will be "success".
+        // Otherwise, each index is the filename and the line with the error. eg: MyStocks.java-19
+		ArrayList<String> errors = compile(extractedDir);
+
+        if (errors.get(0).equals("success"));
 	}
+
+    private ArrayList<String> compile(String dir) {
+        System.out.println("Starting compile...");
+        ApeCompiler compiler = new ApeCompiler(dir);
+        ArrayList<String> compilerErrors = compiler.run();
+
+        if (compilerErrors.get(0).equals("success"))
+            System.out.println("Program compiled successfully.");
+        else {
+            System.out.println("Listing known errors.");
+            for (String item : compilerErrors)
+                System.out.println(item);
+        }
+        return compilerErrors;
+    }
 }
