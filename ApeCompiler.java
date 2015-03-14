@@ -5,15 +5,15 @@
 	
 	public class ApeCompiler 
 	{
-		private static ArrayList<String> _errors = new ArrayList<String>();
-		private static String directory;
+		private ArrayList<String> _errors = new ArrayList<String>();
+		private String directory;
 		
 		public ApeCompiler(String directory)
 		{
 			this.directory = directory;
 		}
 		
-		public static ArrayList run() 
+		public ArrayList<String> run() 
 		{
 				_errors.clear();
 				try{
@@ -50,11 +50,12 @@
 				}catch(Exception e)
 				{
 					System.out.println("error in compiler");
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 			}catch(Exception h)
 			{
-				System.out.println("error in filename");
+                System.out.println("error in filename");
+                h.printStackTrace();
 			}
 			return null;
 		}//end run
@@ -79,7 +80,7 @@
 				
 		}
 		
-		public static void parser(File dir, ByteArrayOutputStream out)
+		public void parser(File dir, ByteArrayOutputStream out)
 		{
 			String[] colonSplit;
 			String toArrayList, temp, errorStream = out.toString();

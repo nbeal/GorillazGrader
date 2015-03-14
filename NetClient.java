@@ -30,6 +30,7 @@ public class NetClient {
 		File f = new File(_fileInput);
 		
 		long fileSize = f.length();
+		int bufferValue = (int) fileSize;
 		String fileName = f.getName();
 		
 		File transfer = new File(_fileInput);
@@ -37,10 +38,12 @@ public class NetClient {
 		
 		OutputStream output = connection.getOutputStream();
 		
+		
 		PrintWriter out = new PrintWriter(output, true);
 		out.println(fileName);
+		out.println(bufferValue);
 		
-		byte[] buff = new byte[(int) fileSize];
+		byte[] buff = new byte[bufferValue];
 		int bytesRead = 0;
 		
 		System.out.println(transfer.length()+ " bytes");
