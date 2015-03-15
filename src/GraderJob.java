@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -67,13 +68,24 @@ public class GraderJob implements Runnable {
 		ZipExtractor.extract(zip);
 		File f = new File(zip);
 		String extractedDir = "./Input/" + f.getName();
+        String solutionDir = "./Solution/";
 
         // Attempt to compile the java files within the directory.
         // If compilation is successful, the first index in errors will be "success".
         // Otherwise, each index is the filename and the line with the error. eg: MyStocks.java-19
-		ArrayList<String> errors = compile(extractedDir);
+        for (File dir : new File(extractedDir).listFiles()) {
+            ArrayList<String> errors = compile(dir.getAbsolutePath());
+            ArrayList<MethodHolder> solutionArray = new MethodParser(solutionDir).parse();
+            ArrayList<MethodHolder> studentArray  = new MethodParser(extractedDir).parse();
 
-        if (errors.get(0).equals("success"));
+            if (errors.get(0).equals("success")) {
+                //run the files.
+            }
+            else {
+                replaceErrors(errors);
+            }
+        }
+
 	}
 
     private ArrayList<String> compile(String dir) {
@@ -89,5 +101,12 @@ public class GraderJob implements Runnable {
                 System.out.println(item);
         }
         return compilerErrors;
+    }
+
+    private void replaceErrors(ArrayList<String> errors) {
+        for (String error : errors) {
+            String[] eArray = error.split("-");
+            System.out.println("Filename: " + eArray[0] + "\nline of error: " + eArray[1]);
+        }
     }
 }

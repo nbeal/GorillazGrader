@@ -3,43 +3,41 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CompilerTest {
+/**
+ * Created by Kyler on 3/15/2015.
+ */
+public class MethodParser {
 
-	public static void main(String[] args) {
-		
-		System.out.println("initializing Systems...");
-		
-		String filePathInput = "./Input/Thing";
-        ApeCompiler compiler = new ApeCompiler("./Input/Thing");
-        ArrayList<String> compilerErrors = compiler.run();
-        for (String item : compilerErrors)
-            System.out.println("output-->" + item);
+    private ArrayList<MethodHolder> _methods;
+    private String _dir = "";
 
-        if (compilerErrors.get(0).equals("success")) {
-            //Woohoo it works!
-        }
-        else {
-            replaceErrors(compilerErrors);
-        }
-
-        System.out.println("\nEnd of Line.");
-	}
-
-    private static void replaceErrors(ArrayList<String> errors) {
-        System.out.println();
-        for (String error : errors) {
-            String[] eArray = error.split("-");
-            System.out.println("Filename: " + eArray[0].split("\\\\")[1] + "\nLine of error: " + eArray[1]);
-            System.out.println();
-        }
+    public MethodParser(String dir) {
+        _dir = dir;
     }
 
-    private static void beginMethodReplacement()
-    {
-        String file = "./Input/Thing/Stock.java";
+    public ArrayList<MethodHolder> parse() {
+        File dir = new File(_dir);
+        File[] dirList = dir.listFiles();
+
+        for (File d : dirList) {
+
+            File[] javaList = d.listFiles();
+
+            for (File file : javaList) {
+                if (file.getName().indexOf(".java") != -1) {
+                    String fileName = file.getName();
+                    beginMethodReplacement(file.getAbsolutePath());
+                }
+            }
+
+        }
+        return new ArrayList<MethodHolder>();
+    }
+
+    private static void beginMethodReplacement(String file) {
+        //String file = "./Input/Thing/Stock.java";
         BufferedReader br = null;
         String block = "";
         ArrayList<MethodHolder> mhList = new ArrayList<MethodHolder>();

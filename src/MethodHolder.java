@@ -12,6 +12,13 @@ public class MethodHolder {
 
     public MethodHolder() {}
 
+    public MethodHolder (String name, String block, int start, int end) {
+        this.name = name;
+        this.block = block;
+        this.start = start;
+        this.end = end;
+    }
+
     public String getName() {
         return name;
     }
