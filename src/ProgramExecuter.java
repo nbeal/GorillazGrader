@@ -26,7 +26,7 @@ public class ProgramExecuter
 				PrintStream out = new PrintStream(fis);
 				System.setOut(out);  //Overrides System.out to file ("Assuming direct control")
 				
-				System.out.println("RUNNING TESTER IN" + directory + ". Results: \n");
+				System.out.println("RUNNING TESTER IN DIRECTORY: \\" + directory + " \nResults: \n");
 				String line = null;
 				while((line = in.readLine()) != null) {
   					System.out.println(line);
