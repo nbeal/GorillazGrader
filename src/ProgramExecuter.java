@@ -37,8 +37,8 @@ public class ProgramExecuter
 				
 			}catch(Exception e)
 			{
-				System.out.println("error running");
-				//System.printStackTrace(;
+				System.out.println("--error running--");
+				e.printStackTrace();
 			}
 		}
 }

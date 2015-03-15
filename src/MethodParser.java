@@ -17,26 +17,19 @@ public class MethodParser {
         _dir = dir;
     }
 
-    public ArrayList<MethodHolder> parse() {
+    public ArrayList<ArrayList<MethodHolder>> parse() {
         File dir = new File(_dir);
         File[] dirList = dir.listFiles();
+        ArrayList<ArrayList<MethodHolder>> projectList = new ArrayList<ArrayList<MethodHolder>>();
 
-        for (File d : dirList) {
-
-            File[] javaList = d.listFiles();
-
-            for (File file : javaList) {
-                if (file.getName().indexOf(".java") != -1) {
-                    String fileName = file.getName();
-                    beginMethodReplacement(file.getAbsolutePath());
-                }
-            }
-
+        for (File file : dirList) {
+            projectList.add(beginMethodReplacement(file.getAbsolutePath()));
         }
-        return new ArrayList<MethodHolder>();
+
+        return projectList;
     }
 
-    private static void beginMethodReplacement(String file) {
+    private static ArrayList<MethodHolder> beginMethodReplacement(String file) {
         //String file = "./Input/Thing/Stock.java";
         BufferedReader br = null;
         String block = "";
@@ -82,8 +75,9 @@ public class MethodParser {
                 System.out.println("End point: " + mhList.get(x).getEnd());
                 System.out.println(mhList.get(x).getBlock());
             }
+            return mhList;
         } catch (IOException e) {e.printStackTrace();}
-
+        return null;
     }// end
 
 }
