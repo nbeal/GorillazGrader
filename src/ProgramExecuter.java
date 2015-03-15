@@ -31,7 +31,7 @@ public class ProgramExecuter
 				while((line = in.readLine()) != null) {
   					System.out.println(line);
 				}
-				System.out.println("\n\n--END OF LINE--\n"");
+				System.out.println("\n\n--END OF LINE--\n");
 				in.close();
 				out.close();
 				
