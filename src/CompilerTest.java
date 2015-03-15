@@ -25,39 +25,46 @@ public class CompilerTest {
         System.out.println("\nEnd of Line.");
 	}
 
-    private static void beginMethodReplacement() {
-        String file = "./Input/Stock.java";
+    private static void beginMethodReplacement()
+    {
+        String file = "./Input/Thing/Stock.java";
         BufferedReader br = null;
-            String block = "";
+        String block = "";
+        ArrayList<MethodHolder> mhList = new ArrayList<MethodHolder>();
 
-                try {
-                    br = new BufferedReader(new FileReader(file));
+        try {
+            br = new BufferedReader(new FileReader(file));
 
-                    String cur, prev = "";
-                    boolean inBlock = false;
-                    int count = 1;
-                    int start = 0;
-                    int end = 0;
-                    Pattern sp = Pattern.compile("\\{");
-                    Pattern ep = Pattern.compile("\\}\\/\\/ end");
+            String cur, prev = "";
+            boolean inBlock = false;
+            int count = 1;
+            int start = 0;
+            int end = 0;
+            Pattern sp = Pattern.compile("(private|public|protected)\\s\\w(.)*\\((.)*\\)[^;]");
+            Pattern ep = Pattern.compile("\\}\\/\\/ end");
 
-                    while ((cur = br.readLine()) != null) {
-                        if (sp.matcher(cur).find()) {
-                            System.out.println(prev);
-                            start = count;
-                            inBlock = true;
-                        }
-                        if (inBlock)
-                            block += cur;
-                        if (ep.matcher(cur).find()) {
-                            end = count;
-                            inBlock = false;
-                        }
+            while ((cur = br.readLine()) != null) {
+                if (sp.matcher(cur).find()) {
+                    System.out.println(prev);
+                    start = count;
+                    inBlock = true;
+                }
+                if (inBlock)
+                    block += cur + "\n";
+                if (ep.matcher(cur).find()) {
+                    end = count;
+                    inBlock = false;
 
-                        count++;
-                        prev = cur;
-                    }
-                } catch (IOException e) {e.printStackTrace();}
-    }
+                }
+
+                count++;
+                prev = cur;
+            }
+            System.out.println("--------------------");
+            System.out.println("Block of code: ");
+            System.out.println(block);
+        } catch (IOException e) {e.printStackTrace();}
+
+    }// end
 
 }
