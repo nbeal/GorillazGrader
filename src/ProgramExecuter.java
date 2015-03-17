@@ -16,9 +16,6 @@ public class ProgramExecuter
 		public void runProgram()
 		{
 			try {
-				
-				Process p = Runtime.getRuntime().exec("java Tester", null, dir);
-				
 				BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("java Tester", null, dir).getInputStream()));
 				
 				File file = new File(directory + ".txt");
@@ -37,7 +34,7 @@ public class ProgramExecuter
 				
 			}catch(Exception e)
 			{
-				System.out.println("--error running--");
+				System.out.println("error running");
 				e.printStackTrace();
 			}
 		}
