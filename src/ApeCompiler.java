@@ -28,23 +28,17 @@ public class ApeCompiler
             for(int i = 0; i < files.length; i++)
                 filenames[i] = files[i].getPath();
 
-            File file = new File("Errors.txt");
             try{
                 ByteArrayOutputStream out= new ByteArrayOutputStream();
-                //FileOutputStream errorStream = new FileOutputStream("Errors.txt");
                 JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
                 int compilationResult =	compiler.run(null, null, out, filenames);
 
-                if(compilationResult == 0){
-                    //System.out.println("Compilation is successful");
-                    //runStuff(dir);
+                if(compilationResult == 0){ //Compilation is successful
                     _errors.add("success");
 
-                }else{
-                    System.out.println("Compilation Failed");
+                }else{ //Compilation Failed
                     parser(dir, out);
-
                 }
                 return _errors;
             }catch(Exception e)
