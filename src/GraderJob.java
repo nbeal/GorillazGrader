@@ -43,9 +43,7 @@ public class GraderJob implements Runnable {
 
     private void scanMethods(String fn) {
         File zip = new File ("Input/" + fn);
-        //System.out.println(zip.getAbsolutePath());
-        // Step 1: Extract Student zip file.
-        //ZipExtractor.extract(zip.getAbsolutePath());
+
         File studentFolder = new File ("Input/" + fn.substring(0, fn.length() - 4));
         studentFolder.mkdir();
         ZipUtils.extract(zip, studentFolder);
@@ -56,24 +54,23 @@ public class GraderJob implements Runnable {
 
         if (errors.get(0).equals("success")) {
             // Success. Run it.
-            System.out.println("here");
             ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
             executor.runProgram();
-            System.out.println("Successful run. Output in Results.");
+            System.out.println("Successful run. Output in Results.\n");
         }
         else {
+            System.out.println("\nErrors Found:\n");
             for (String item : errors)
                 System.out.println(item);
 
             replaceBrokenMethods(studentFolder, errors);
-            System.out.println("Made it.");
 
             ApeCompiler compiler2 = new ApeCompiler(studentFolder.getAbsolutePath());
             ArrayList<String> errors2 = compiler2.run();
 
             ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
             executor.runProgram();
-            System.out.println("Replaced errors in file, output in Results.");
+            System.out.println("Replaced errors in file, output in Results.\n");
         }
 
     }// end scanMethods
