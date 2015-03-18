@@ -17,20 +17,12 @@ public class MethodParser {
         _dir = dir;
     }
 
-    public ArrayList<ArrayList<MethodHolder>> parse() {
+    public ArrayList<MethodHolder> parse() {
         File dir = new File(_dir);
-        File[] dirList = dir.listFiles();
-        ArrayList<ArrayList<MethodHolder>> projectList = new ArrayList<ArrayList<MethodHolder>>();
-
-        for (File file : dirList) {
-            projectList.add(beginMethodReplacement(file.getAbsolutePath()));
-        }
-
-        return projectList;
+        return findMethods(dir.getAbsolutePath());
     }
 
-    private static ArrayList<MethodHolder> beginMethodReplacement(String file) {
-        //String file = "./Input/Thing/Stock.java";
+    private static ArrayList<MethodHolder> findMethods(String file) {
         BufferedReader br = null;
         String block = "";
         ArrayList<MethodHolder> mhList = new ArrayList<MethodHolder>();
@@ -67,14 +59,16 @@ public class MethodParser {
                 count++;
                 prev = cur;
             }
-            System.out.println("--------------------");
-            System.out.println("Methods Found: \n");
+            //System.out.println("--------------------");
+            //System.out.println("Methods Found: \n");
+            /*
             for (int x = 0; x < mhList.size(); x++) {
                 System.out.println("Method name: " + mhList.get(x).getName());
                 System.out.println("Start point: " + mhList.get(x).getStart());
                 System.out.println("End point: " + mhList.get(x).getEnd());
                 System.out.println(mhList.get(x).getBlock());
             }
+            */
             return mhList;
         } catch (IOException e) {e.printStackTrace();}
         return null;

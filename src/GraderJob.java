@@ -75,8 +75,8 @@ public class GraderJob implements Runnable {
         // Otherwise, each index is the filename and the line with the error. eg: MyStocks.java-19
         for (File dir : new File(extractedDir).listFiles()) {
             ArrayList<String> errors = compile(dir.getAbsolutePath());
-            ArrayList<MethodHolder> solutionArray = new MethodParser(solutionDir + dir.getName()).parse();
-            ArrayList<MethodHolder> studentArray  = new MethodParser(dir.getAbsolutePath()).parse();
+            //ArrayList<MethodHolder> solutionArray = new MethodParser(solutionDir + dir.getName()).parse();
+            //ArrayList<MethodHolder> studentArray  = new MethodParser(dir.getAbsolutePath()).parse();
 
             if (errors.get(0).equals("success")) {
                 //run the files.

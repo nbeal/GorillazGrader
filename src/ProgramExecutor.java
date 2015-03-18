@@ -2,12 +2,12 @@ import java.io.IOException;
 import java.io.*;
 import java.util.*;
 
-public class ProgramExecuter
+public class ProgramExecutor
 {
 	private String directory;
 	private File dir;
 	
-	public ProgramExecuter(String filename)
+	public ProgramExecutor(String filename)
 	{
 		directory = filename;
 		dir = new File(directory);
@@ -18,7 +18,7 @@ public class ProgramExecuter
 			try {
 				BufferedReader in = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec("java Tester", null, dir).getInputStream()));
 				
-				File file = new File(directory + ".txt");
+				File file = new File("Results/" + dir.getName() + ".txt");
 				FileOutputStream fis = new FileOutputStream(file);
 				PrintStream out = new PrintStream(fis);
 				System.setOut(out);  //Overrides System.out to file ("Assuming direct control")

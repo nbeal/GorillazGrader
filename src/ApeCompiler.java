@@ -84,7 +84,7 @@ public class ApeCompiler
         String splitter = dir.getName();
         String[] errorSplit = errorStream.split(splitter);
 
-        for(int i = 0; i < errorSplit.length; i++)
+        for(int i = 1; i < errorSplit.length; i++)
         {
             temp = errorSplit[i];
             //System.out.println(temp);
