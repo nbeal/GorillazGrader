@@ -40,5 +40,10 @@ public class NetClient {
         out.flush();
         out.close();
         dis.close();
+
+        //DataInputStream input = new DataInputStream(socket.getInputStream());
+        //String value = input.readUTF();
+        //System.out.println(value);
+        //input.close();
 	}
 }

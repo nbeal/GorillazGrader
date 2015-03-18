@@ -6,11 +6,13 @@ public class ProgramExecutor
 {
 	private String directory;
 	private File dir;
+    private int _errorCount;
 	
-	public ProgramExecutor(String filename)
+	public ProgramExecutor(String filename, int errorCount)
 	{
 		directory = filename;
 		dir = new File(directory);
+        _errorCount = errorCount;
 	}
 		
 		public void runProgram()
@@ -24,7 +26,8 @@ public class ProgramExecutor
                 PrintStream original = System.out;
 				System.setOut(out);  //Overrides System.out to file ("Assuming direct control")
 
-				System.out.println("RUNNING TESTER IN DIRECTORY: \\" + directory + " \nResults: \n");
+				System.out.println("RUNNING TESTER IN DIRECTORY: \\" + directory);
+                System.out.println("NUMBER OF ERRORS REPAIRED IN PROGRAM: " + _errorCount + " \n\nResults: \n");
 				String line = null;
 				while((line = in.readLine()) != null) {
   					System.out.println(line);

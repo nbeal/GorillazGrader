@@ -38,10 +38,11 @@ public class GraderJob implements Runnable {
 
         System.out.println("Received: " + fn);
 
-		scanMethods(fn);
+		ArrayList<String> errors = scanMethods(fn);
+
 	}
 
-    private void scanMethods(String fn) {
+    private ArrayList<String> scanMethods(String fn) {
         File zip = new File ("Input/" + fn);
 
         File studentFolder = new File ("Input/" + fn.substring(0, fn.length() - 4));
@@ -54,7 +55,7 @@ public class GraderJob implements Runnable {
 
         if (errors.get(0).equals("success")) {
             // Success. Run it.
-            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
+            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath(), 0);
             executor.runProgram();
             System.out.println("Successful run. Output in Results.\n");
         }
@@ -68,10 +69,12 @@ public class GraderJob implements Runnable {
             ApeCompiler compiler2 = new ApeCompiler(studentFolder.getAbsolutePath());
             ArrayList<String> errors2 = compiler2.run();
 
-            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
+            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath(), errors.size());
             executor.runProgram();
             System.out.println("Replaced errors in file, output in Results.\n");
         }
+
+        return errors;
 
     }// end scanMethods
 

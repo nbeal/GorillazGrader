@@ -25,7 +25,7 @@ public class MethodReplaceTest {
         if (errors.get(0).equals("success")) {
             // Success. Run it.
             System.out.println("here");
-            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
+            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath(), 0);
             executor.runProgram();
             System.out.println("Successful run. Output in Results.");
         }
@@ -35,7 +35,7 @@ public class MethodReplaceTest {
 
             replaceBrokenMethods(studentFolder, errors);
             System.out.println("Made it.");
-            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
+            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath(), 0);
             executor.runProgram();
             System.out.println("Replaced errors in file, output in Results.");
         }
