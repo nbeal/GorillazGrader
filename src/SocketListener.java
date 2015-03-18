@@ -25,5 +25,10 @@ public class SocketListener implements Runnable {
 				_service.submit(new GraderJob(socket));
 			} catch (IOException e) {System.out.println("Socket listener has been closed.");}
 		}
-	}// end run
+        try {
+            _listener.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }// end run
 }// end SocketListener

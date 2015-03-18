@@ -1,9 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class NetClient {
@@ -25,40 +20,25 @@ public class NetClient {
 	// Client side method.
 	public void connectToServer() throws IOException {
 		
-		Socket connection = new Socket(SERVER_ADDRESS, SERVER_SOCKET);
+		Socket socket = new Socket(SERVER_ADDRESS, SERVER_SOCKET);
+        OutputStream sos = socket.getOutputStream();
+        File f = new File(_fileInput);
 
-		File f = new File(_fileInput);
-		
-		long fileSize = f.length();
-		int bufferValue = (int) fileSize;
-		String fileName = f.getName();
-		
-		File transfer = new File(_fileInput);
-		InputStream in = new FileInputStream(transfer);
-		
-		OutputStream output = connection.getOutputStream();
-		
-		
-		PrintWriter out = new PrintWriter(output, true);
-		out.println(fileName);
-		out.println(bufferValue);
-		
-		byte[] buff = new byte[bufferValue];
-		int bytesRead = 0;
-		
-		System.out.println(transfer.length()+ " bytes");
-		
-		while((bytesRead = in.read(buff))>0)
-		{
-			output.write(buff,0,bytesRead);
-		}
-		
-		output.flush();
-		
-		in.close();
-		output.close();
-		connection.close();
-		
-		
+        DataOutputStream out = new DataOutputStream(sos);
+        out.writeUTF(f.getName());
+        DataInputStream dis = new DataInputStream(new FileInputStream(_fileInput));
+        ByteArrayOutputStream ao = new ByteArrayOutputStream();
+
+        int read = 0;
+        byte[] buf = new byte[1024];
+        while ((read = dis.read(buf)) > -1) {
+            ao.write(buf, 0, read);
+        }
+
+        out.writeLong(ao.size());
+        out.write(ao.toByteArray());
+        out.flush();
+        out.close();
+        dis.close();
 	}
 }

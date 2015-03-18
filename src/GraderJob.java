@@ -1,10 +1,6 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Array;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,6 +9,7 @@ import java.util.ArrayList;
 public class GraderJob implements Runnable {
 	
 	private Socket _socket;
+    private ServerSocket _serverSocket;
 	private final String CUR_DIR = Paths.get(".").toAbsolutePath().normalize().toString();
 
 	public GraderJob(Socket socket) {
@@ -25,88 +22,70 @@ public class GraderJob implements Runnable {
 	}
 	
 	private void connectToClient() throws IOException {
-		
-		String inputPath = CUR_DIR + "\\Input\\";
-	
-		// Receive the name of the incoming zip file from the client.
-		InputStream input = _socket.getInputStream();
-		BufferedReader br = new BufferedReader(new InputStreamReader(input));
-		
-		String incomingFileName = br.readLine();
-		System.out.println("Incoming zip file name: " + incomingFileName);
 
-		int incomingFileLength = Integer.parseInt(br.readLine());
-		System.out.println("File size: " + incomingFileLength);
-		
-		File f = new File(incomingFileName);
-		incomingFileName = f.getName();
-				
-		// Create the stream where you write the incoming file. (to the Input folder)
-		String filePathInput = inputPath + incomingFileName;
-		FileOutputStream fos = new FileOutputStream(new File(filePathInput));
-		
-		byte[] outBuffer = new byte[incomingFileLength];
-		int bytesReceived = 0;
-		
-		while((bytesReceived = input.read(outBuffer))>0)
-		{
-			fos.write(outBuffer,0,bytesReceived);
-		}
-		
-		fos.flush();
-		fos.close();
-		input.close();
-		
-		System.out.println("Finished receiving file:" + incomingFileName);
-		
-		extractAndCompile(filePathInput);
-	}
-	
-	private void extractAndCompile(String zip) {
-
-        // Extract the received zip file into a directory of same name. eg: kburnett.zip -> /kburnett/
-		ZipExtractor.extract(zip);
-		File f = new File(zip);
-		String extractedDir = "./Input/" + f.getName();
-        String solutionDir = "./Solution/";
-
-        // Attempt to compile the java files within the directory.
-        // If compilation is successful, the first index in errors will be "success".
-        // Otherwise, each index is the filename and the line with the error. eg: MyStocks.java-19
-        for (File dir : new File(extractedDir).listFiles()) {
-            ArrayList<String> errors = compile(dir.getAbsolutePath());
-            //ArrayList<MethodHolder> solutionArray = new MethodParser(solutionDir + dir.getName()).parse();
-            //ArrayList<MethodHolder> studentArray  = new MethodParser(dir.getAbsolutePath()).parse();
-
-            if (errors.get(0).equals("success")) {
-                //run the files.
-            }
-            else {
-                replaceErrors(errors);
-            }
+        DataInputStream dis = new DataInputStream(_socket.getInputStream());
+        String fn = dis.readUTF();
+        long length = dis.readLong();
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream("Input\\" + fn));
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = dis.read(buffer)) != -1) {
+            dos.write(buffer, 0, len);
         }
 
+        dis.close();
+        dos.close();
+
+        System.out.println("Received: " + fn);
+
+		scanMethods(fn);
 	}
 
-    private ArrayList<String> compile(String dir) {
-        System.out.println("Starting compile...");
-        ApeCompiler compiler = new ApeCompiler(dir);
-        ArrayList<String> compilerErrors = compiler.run();
+    private void scanMethods(String fn) {
+        File zip = new File ("Input/" + fn);
+        //System.out.println(zip.getAbsolutePath());
+        // Step 1: Extract Student zip file.
+        //ZipExtractor.extract(zip.getAbsolutePath());
+        File studentFolder = new File ("Input/" + fn.substring(0, fn.length() - 4));
+        studentFolder.mkdir();
+        ZipUtils.extract(zip, studentFolder);
 
-        if (compilerErrors.get(0).equals("success"))
-            System.out.println("Program compiled successfully.");
+        // Step 2:
+        ApeCompiler compiler = new ApeCompiler(studentFolder.getAbsolutePath());
+        ArrayList<String> errors = compiler.run();
+
+        if (errors.get(0).equals("success")) {
+            // Success. Run it.
+            System.out.println("here");
+            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
+            executor.runProgram();
+            System.out.println("Successful run. Output in Results.");
+        }
         else {
-            System.out.println("Listing known errors.");
-            for (String item : compilerErrors)
+            for (String item : errors)
                 System.out.println(item);
-        }
-        return compilerErrors;
-    }
 
-    private void replaceErrors(ArrayList<String> errors) {
-        for (String error : errors) {
-            String[] eArray = error.split("-");
-            System.out.println("Filename: " + eArray[0] + "\nline of error: " + eArray[1]);
+            replaceBrokenMethods(studentFolder, errors);
+            System.out.println("Made it.");
+
+            ApeCompiler compiler2 = new ApeCompiler(studentFolder.getAbsolutePath());
+            ArrayList<String> errors2 = compiler2.run();
+
+            ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
+            executor.runProgram();
+            System.out.println("Replaced errors in file, output in Results.");
+        }
+
+    }// end scanMethods
+
+    private void replaceBrokenMethods(File folder, ArrayList<String> errors) {
+        for (String pair : errors) {
+            String fn = pair.split("-")[0].split("\\\\")[1];
+            String line = pair.split("-")[1];
+            fn = folder.getAbsolutePath() + "\\" + fn;
+
+            MyParser.replace(fn, line);
+
         }
     }
 }
