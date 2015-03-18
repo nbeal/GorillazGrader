@@ -21,8 +21,9 @@ public class ProgramExecutor
 				File file = new File("Results/" + dir.getName() + ".txt");
 				FileOutputStream fis = new FileOutputStream(file);
 				PrintStream out = new PrintStream(fis);
+                PrintStream original = System.out;
 				System.setOut(out);  //Overrides System.out to file ("Assuming direct control")
-				
+
 				System.out.println("RUNNING TESTER IN DIRECTORY: \\" + directory + " \nResults: \n");
 				String line = null;
 				while((line = in.readLine()) != null) {
@@ -31,6 +32,7 @@ public class ProgramExecutor
 				System.out.println("\n\n--END OF LINE--\n");
 				in.close();
 				out.close();
+                System.setOut(original);
 				
 			}catch(Exception e)
 			{

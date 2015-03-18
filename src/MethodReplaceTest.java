@@ -8,11 +8,14 @@ public class MethodReplaceTest {
 
     public static void main(String[] args) {
 
-        //File zip = new File ("./Input/DHolliday.zip");
-
+        File zip = new File ("Input/NBeal.zip");
+        //System.out.println(zip.getAbsolutePath());
         // Step 1: Extract Student zip file.
         //ZipExtractor.extract(zip.getAbsolutePath());
-        File studentFolder = new File ("Input/DHolliday");
+        File newdir = new File("Input\\NBeal");
+        newdir.mkdir();
+        ZipUtils.extract(zip, newdir);
+        File studentFolder = new File ("Input/NBeal");
 
         // Step 2:
         //System.out.println(studentFolder.getAbsolutePath());
@@ -21,6 +24,7 @@ public class MethodReplaceTest {
 
         if (errors.get(0).equals("success")) {
             // Success. Run it.
+            System.out.println("here");
             ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
             executor.runProgram();
             System.out.println("Successful run. Output in Results.");
@@ -30,6 +34,7 @@ public class MethodReplaceTest {
                 System.out.println(item);
 
             replaceBrokenMethods(studentFolder, errors);
+            System.out.println("Made it.");
             ProgramExecutor executor = new ProgramExecutor(studentFolder.getAbsolutePath());
             executor.runProgram();
             System.out.println("Replaced errors in file, output in Results.");
